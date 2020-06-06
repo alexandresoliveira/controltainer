@@ -1,0 +1,12 @@
+{
+  "name": "controltainer",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^9.0.2"
+  }
+}
