@@ -11,6 +11,24 @@ const {
 
 const execPromise = promisify(exec);
 
+async function start(menuId) {
+  const isStopedContainerId = await execPromise(isStopped(menuId));
+  if (isStopedContainerId) {
+    const id = isStopedContainerId.stdout.replace(/\n/g, '');
+    const commandStart = startContainer(id);
+    await execPromise(commandStart);
+  }
+}
+
+async function stop(menuId) {
+  const isRunningContainerId = await execPromise(isRunning(menuId));
+  if (isRunningContainerId) {
+    const id = isRunningContainerId.stdout.replace(/\n/g, '');
+    const commandStart = stopContainer(id);
+    await execPromise(commandStart);
+  }
+}
+
 module.exports = {
   findContainers: async () => {
     const command = await execPromise(allContainers);
@@ -28,28 +46,14 @@ module.exports = {
             id: `${containerId} ${containerName} Start`,
             label: 'Start',
             click: async function (menuItem, browserWindow, event) {
-              const isStopedContainerId = await execPromise(
-                isStopped(menuItem.id),
-              );
-              if (isStopedContainerId) {
-                const id = isStopedContainerId.stdout.replace(/\n/g, '');
-                const commandStart = startContainer(id);
-                await execPromise(commandStart);
-              }
+              start(menuItem.id);
             },
           },
           {
             id: `${containerId} ${containerName} Stop`,
             label: 'Stop',
             click: async function (menuItem, browserWindow, event) {
-              const isRunningContainerId = await execPromise(
-                isRunning(menuItem.id),
-              );
-              if (isRunningContainerId) {
-                const id = isRunningContainerId.stdout.replace(/\n/g, '');
-                const commandStart = stopContainer(id);
-                await execPromise(commandStart);
-              }
+              stop(menuItem.id);
             },
           },
         ],
