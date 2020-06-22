@@ -1,7 +1,10 @@
 const { resolve } = require('path');
 const { app, Menu, Tray, MenuItem } = require('electron');
+const fixPath = require('fix-path');
 
 const { findContainers } = require('./utils/container');
+
+fixPath();
 
 app.dock.hide();
 
@@ -20,10 +23,20 @@ app.whenReady().then(async () => {
       },
     });
 
+    const exitItem = new MenuItem({
+      id: 'exit-item',
+      label: 'Exit',
+      click: async function (menuItem, browserWindow, event) {
+        app.quit(0);
+      },
+    });
+
     const menu = Menu.buildFromTemplate([
       refreshItem,
       new MenuItem({ type: 'separator' }),
       ...containers,
+      new MenuItem({ type: 'separator' }),
+      exitItem,
     ]);
     return menu;
   }
